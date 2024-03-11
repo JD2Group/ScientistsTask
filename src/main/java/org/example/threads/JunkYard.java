@@ -1,6 +1,7 @@
 package org.example.threads;
 
 import lombok.Getter;
+import org.example.Storage;
 import org.example.utils.Constants;
 import org.example.utils.Factory;
 import org.example.utils.RobotParts;
@@ -14,7 +15,7 @@ import java.util.stream.IntStream;
 @Getter
 public class JunkYard extends Thread{
 
-    private List<Scientist> scientistList = new ArrayList<>();
+    private List<Storage> storageList = new ArrayList<>();
     private int countOfNight = 0;
     private Factory factory = new Factory();
 
@@ -36,14 +37,15 @@ public class JunkYard extends Thread{
         notifyAll();
     }
 
-    public void addScientists(List<Scientist> scientists){
-        scientistList.addAll(scientists);
+    public void addStorage(List<Storage> st){
+        storageList.addAll(st);
     }
 
     @Override
     public void run() {
         //setName(threadName);
-        scientistList.forEach(Scientist::start);
+        storageList.forEach(Storage::activate);
+
         factory.dropSomeParts(Constants.START_COUNT_OF_ROBOT_PARTS);
         while (countOfNight != Constants.COUNT_OF_NIGHT){
             countOfNight++;
@@ -58,5 +60,8 @@ public class JunkYard extends Thread{
                 throw new RuntimeException(e);
             }
         }
+        storageList.forEach(Storage::deactivate);
+        System.out.println();
+        storageList.forEach(Storage::calculateFinalResult);
     }
 }

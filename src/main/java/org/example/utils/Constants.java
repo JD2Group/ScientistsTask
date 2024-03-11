@@ -6,7 +6,7 @@ public interface Constants {
 
     Random random = new Random();
 
-    int DEFAULT_COUNT_OF_SCIENTISTS_PER_COMP = 2;
+    int DEFAULT_COUNT_OF_STORAGE_PER_COMP = 2;
     String DEFAULT_COMPETITION_NAME = "Competition";
     int START_COUNT_OF_ROBOT_PARTS = 20;
     int COUNT_OF_NIGHT = 100;

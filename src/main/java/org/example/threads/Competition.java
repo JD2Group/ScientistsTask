@@ -1,5 +1,6 @@
 package org.example.threads;
 
+import org.example.Storage;
 import org.example.utils.Constants;
 
 import java.util.Comparator;
@@ -9,26 +10,25 @@ import java.util.stream.IntStream;
 
 public class Competition extends Thread{
 
-    private int countOfScientists;
+    private int countOfStorages;
 
-    public Competition(String thName, int countOfScientists){
+    public Competition(String thName, int countOfStorages){
         setName(thName);
-        this.countOfScientists = countOfScientists;
+        this.countOfStorages = countOfStorages;
     }
     public Competition(){
         setName(Constants.DEFAULT_COMPETITION_NAME);
-        this.countOfScientists = Constants.DEFAULT_COUNT_OF_SCIENTISTS_PER_COMP;
+        this.countOfStorages = Constants.DEFAULT_COUNT_OF_STORAGE_PER_COMP;
     }
 
     @Override
     public void run() {
         JunkYard junkYard = new JunkYard();
 
-        List<Scientist> scientistList = IntStream.range(0, countOfScientists)
-                .mapToObj(i -> new Scientist( getName() + " - Sc" + (i+1), junkYard))
+        List<Storage> storageList = IntStream.range(0, countOfStorages)
+                .mapToObj(i -> new Storage("Storage[" + (i+1) + "]", junkYard))
                 .collect(Collectors.toList());
-        junkYard.addScientists(scientistList);
-
+        junkYard.addStorage(storageList);
         junkYard.start();
 
         try {
@@ -36,18 +36,11 @@ public class Competition extends Thread{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        //TODO Убрать это, но мой ноут сел.
-        junkYard.getScientistList().forEach(i->{
-            try {
-                i.join();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
 
 
-        scientistList.sort(Comparator.comparingInt(Scientist::getResult));
-        Scientist winner = scientistList.get(countOfScientists-1);
-        System.out.println("Winner: " + winner.getThreadName() + ", score = " + winner.getResult());
+
+        storageList.sort(Comparator.comparingInt(Storage::getResult));
+        Storage winner = storageList.get(countOfStorages -1);
+        System.out.println("\nWinner: " + winner.getName() + ", score = " + winner.getResult());
     }
 }

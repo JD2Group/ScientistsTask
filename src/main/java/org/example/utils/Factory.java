@@ -7,15 +7,13 @@ import java.util.stream.IntStream;
 
 public class Factory {
 
-    private List<RobotParts> robotPartsList = new ArrayList<>();
+    private final List<RobotParts> robotPartsList = new ArrayList<>();
 
     public void dropSomeParts(int count) {
-        synchronized (robotPartsList) {
-            System.out.println("Factory drop: " + count);
+            System.out.println("\nFactory drop: " + count);
             IntStream.range(0, count).forEach(i ->
                     robotPartsList.add(RobotParts.values()[Constants.random.nextInt(RobotParts.values().length)]));
             System.out.println("Robot parts on junk yard: " + robotPartsList);
-        }
     }
 
     public RobotParts provideRobotPart(){
