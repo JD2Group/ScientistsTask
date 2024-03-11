@@ -6,7 +6,6 @@ import org.example.utils.Factory;
 import org.example.utils.RobotParts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -46,13 +45,16 @@ public class JunkYard extends Thread{
     public void run() {
 
         scientistList.forEach(Scientist::start);
-        while (countOfNight != 100){
+        factory.dropSomeParts(Constants.START_COUNT_OF_ROBOT_PARTS);
+        while (countOfNight != Constants.COUNT_OF_NIGHT){
             countOfNight++;
-            int countOfPart = Constants.random.nextInt(4) + 1;
+            int countOfPart = Constants.random.nextInt(Constants.MAX_COUNT_OF_PARTS_PER_NIGHT
+                    -Constants.MIN_COUNT_OF_PARTS_PER_NIGHT + 1)
+                    + Constants.MIN_COUNT_OF_PARTS_PER_NIGHT;
             factory.dropSomeParts(countOfPart);
             notifyList();
             try {
-                sleep(10);
+                sleep(Constants.TIME_DAY_SWAP);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
