@@ -19,26 +19,30 @@ public class Minion extends Thread{
     public Minion(Scientist scientist, JunkYard junkYard){
         linkedScientist = scientist;
         linkedJunkYard = junkYard;
-        threadName = scientist.getThreadName();
+        threadName = scientist.getThreadName() + " : minion";
         robotPartsList = new ArrayList<>();
     }
 
-    private void pickUpRobotPart(){
-        robotPartsList.add(linkedJunkYard.provideRobotPart());
+    private void pickUpRobotParts(int count){
+        robotPartsList.addAll(linkedJunkYard.pickUpRobotParts(count));
+        System.out.println(threadName + " : " + robotPartsList);
     }
-    private void putRobotPart(){
+    private void putRobotParts(){
         linkedScientist.putRobotParts(robotPartsList);
+        robotPartsList.clear();
     }
 
+    @Override
     public void run() {
+        System.out.println(threadName + " started.");
+        linkedJunkYard.waitList();
         while (linkedJunkYard.getState() != State.TERMINATED){
-
-            int countOfPartToTake = Constants.random.nextInt(4);
+            int countOfPartToTake = Constants.random.nextInt(4) + 1;
             System.out.println(threadName + " want to take: " + countOfPartToTake + " parts.");
-
-
-
-
+            pickUpRobotParts(countOfPartToTake);
+            putRobotParts();
+            linkedJunkYard.waitList();
         }
+        linkedScientist.finalCalculate();
     }
 }
