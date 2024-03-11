@@ -15,7 +15,6 @@ import java.util.stream.IntStream;
 public class JunkYard extends Thread{
 
     private List<Scientist> scientistList = new ArrayList<>();
-    private List<Minion> minionList = new ArrayList<>();
     private int countOfNight = 0;
     private Factory factory = new Factory();
 
@@ -43,7 +42,7 @@ public class JunkYard extends Thread{
 
     @Override
     public void run() {
-
+        //setName(threadName);
         scientistList.forEach(Scientist::start);
         factory.dropSomeParts(Constants.START_COUNT_OF_ROBOT_PARTS);
         while (countOfNight != Constants.COUNT_OF_NIGHT){

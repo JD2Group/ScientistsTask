@@ -1,7 +1,7 @@
 package org.example.threads;
 
 import lombok.Getter;
-import lombok.Setter;
+import org.example.Storage;
 import org.example.utils.Constants;
 import org.example.utils.RobotParts;
 
@@ -12,28 +12,33 @@ import java.util.List;
 public class Minion extends Thread{
 
     private String threadName;
+
     private Scientist linkedScientist;
     private JunkYard linkedJunkYard;
-    private List<RobotParts> robotPartsList;
+    private Storage linkedStorage;
 
-    public Minion(Scientist scientist, JunkYard junkYard){
+    private List<RobotParts> backpack;
+
+    public Minion(Scientist scientist, JunkYard junkYard, Storage storage){
         linkedScientist = scientist;
         linkedJunkYard = junkYard;
+        linkedStorage = storage;
         threadName = scientist.getThreadName() + " : minion";
-        robotPartsList = new ArrayList<>();
+        backpack = new ArrayList<>();
     }
 
     private void pickUpRobotParts(int count){
-        robotPartsList.addAll(linkedJunkYard.pickUpRobotParts(count));
-        System.out.println(threadName + " : " + robotPartsList);
+        backpack.addAll(linkedJunkYard.pickUpRobotParts(count));
+        System.out.println(threadName + " : " + backpack);
     }
     private void putRobotParts(){
-        linkedScientist.putRobotParts(robotPartsList);
-        robotPartsList.clear();
+        linkedStorage.putRobotParts(backpack);
+        backpack.clear();
     }
 
     @Override
     public void run() {
+        setName(threadName);
         System.out.println(threadName + " started.");
         linkedJunkYard.waitList();
         while (linkedJunkYard.getState() != State.TERMINATED){
@@ -43,6 +48,6 @@ public class Minion extends Thread{
             putRobotParts();
             linkedJunkYard.waitList();
         }
-        linkedScientist.finalCalculate();
+        linkedStorage.finalCalculate();
     }
 }
