@@ -6,10 +6,9 @@ import org.example.Storage;
 
 @Getter
 public class Scientist extends Thread{
+    private final Storage linkedStorage;
 
-    private String threadName;
-    private Storage linkedStorage;
-    private int result;
+    private final String threadName;
 
     public Scientist(String storageName, Storage storage){
         threadName = storageName + " - Scientist";
@@ -27,6 +26,8 @@ public class Scientist extends Thread{
                 e.printStackTrace();
             }
         }
+        System.out.println( threadName + " stopped.");
+
     }
 
 }

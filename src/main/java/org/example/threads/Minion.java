@@ -1,6 +1,7 @@
 package org.example.threads;
 
 import lombok.Getter;
+import org.example.JunkYard;
 import org.example.Storage;
 import org.example.utils.Constants;
 import org.example.utils.RobotParts;
@@ -11,12 +12,11 @@ import java.util.List;
 @Getter
 public class Minion extends Thread{
 
-    private String threadName;
+    private final JunkYard linkedJunkYard;
+    private final Storage linkedStorage;
 
-    private JunkYard linkedJunkYard;
-    private Storage linkedStorage;
-
-    private List<RobotParts> backpack;
+    private final String threadName;
+    private final List<RobotParts> backpack;
 
     public Minion(String storageName, JunkYard junkYard, Storage storage){
         linkedJunkYard = junkYard;
@@ -46,5 +46,6 @@ public class Minion extends Thread{
             putRobotParts();
             linkedJunkYard.waitList();
         }
+        System.out.println( threadName + " stopped.");
     }
 }

@@ -1,31 +1,46 @@
 package org.example.utils;
 
-import java.util.ArrayList;
+import org.example.JunkYard;
+
 import java.util.List;
-import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Factory {
+public class Factory extends Thread{
+    private final JunkYard linkedJunkYard;
+    private int countOfNight = 0;
 
-    private final List<RobotParts> robotPartsList = new ArrayList<>();
 
-    public void dropSomeParts(int count) {
+    public Factory(String thName, JunkYard junkYard){
+        setName(thName);
+        linkedJunkYard = junkYard;
+    }
+
+    public List<RobotParts> dropSomeParts(int count) {
             System.out.println("\nFactory drop: " + count);
-            IntStream.range(0, count).forEach(i ->
-                    robotPartsList.add(RobotParts.values()[Constants.random.nextInt(RobotParts.values().length)]));
-            System.out.println("Robot parts on junk yard: " + robotPartsList);
+            return IntStream.range(0, count).mapToObj(i ->
+                     RobotParts.values()[Constants.random.nextInt(RobotParts.values().length)])
+                    .collect(Collectors.toList());
     }
 
-    public RobotParts provideRobotPart(){
-        synchronized (robotPartsList) {
-            if (robotPartsList.isEmpty()) {
-                return null;
+
+
+    @Override
+    public void run() {
+        linkedJunkYard.addRobotParts(dropSomeParts(Constants.START_COUNT_OF_ROBOT_PARTS));
+        while (countOfNight != Constants.COUNT_OF_NIGHT){
+            countOfNight ++;
+            int countOfPart = Constants.random.nextInt(Constants.MAX_COUNT_OF_PARTS_PER_NIGHT
+                    -Constants.MIN_COUNT_OF_PARTS_PER_NIGHT + 1)
+                    + Constants.MIN_COUNT_OF_PARTS_PER_NIGHT;
+            linkedJunkYard.addRobotParts(dropSomeParts(countOfPart));
+            linkedJunkYard.notifyList();
+            try {
+                sleep(Constants.TIME_DAY_SWAP);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            int index = Constants.random.nextInt(robotPartsList.size());
-            RobotParts part = robotPartsList.get(index);
-            robotPartsList.remove(index);
-            return part;
         }
+        System.out.println("\n Factory stopped.");
     }
-
 }

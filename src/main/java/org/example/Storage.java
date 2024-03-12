@@ -1,7 +1,6 @@
 package org.example;
 
 import lombok.Getter;
-import org.example.threads.JunkYard;
 import org.example.threads.Minion;
 import org.example.threads.Scientist;
 import org.example.utils.RobotParts;
@@ -11,11 +10,13 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Storage {
-    private Map<RobotParts, Integer> sortedRobotParts;
-    private List<RobotParts> unsortedRobotParts;
-    private Minion linkedMinion;
-    private Scientist linkedScientists;
-    private String name;
+    private final Minion linkedMinion;
+    private final Scientist linkedScientists;
+
+    private final Map<RobotParts, Integer> sortedRobotParts;
+    private final List<RobotParts> unsortedRobotParts;
+
+    private final String name;
     private boolean active;
     private int result;
 

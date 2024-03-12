@@ -1,5 +1,6 @@
 package org.example.threads;
 
+import org.example.JunkYard;
 import org.example.Storage;
 import org.example.utils.Constants;
 
@@ -10,7 +11,7 @@ import java.util.stream.IntStream;
 
 public class Competition extends Thread{
 
-    private int countOfStorages;
+    private final int countOfStorages;
 
     public Competition(String thName, int countOfStorages){
         setName(thName);
@@ -26,19 +27,13 @@ public class Competition extends Thread{
         JunkYard junkYard = new JunkYard();
 
         List<Storage> storageList = IntStream.range(0, countOfStorages)
-                .mapToObj(i -> new Storage("Storage[" + (i+1) + "]", junkYard))
+                .mapToObj(i -> new Storage(getName() + " Storage[" + (i+1) + "]", junkYard))
                 .collect(Collectors.toList());
-        junkYard.addStorage(storageList);
-        junkYard.start();
+        junkYard.addStorages(storageList);
 
-        try {
-            junkYard.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        junkYard.run();
 
-
-
+        //TODO Сюда запихать ничью и вынести в отдельный метод подсчет резов.
         storageList.sort(Comparator.comparingInt(Storage::getResult));
         Storage winner = storageList.get(countOfStorages -1);
         System.out.println("\nWinner: " + winner.getName() + ", score = " + winner.getResult());
