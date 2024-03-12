@@ -4,6 +4,7 @@ import org.example.JunkYard;
 import org.example.Storage;
 import org.example.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,15 +29,24 @@ public class Competition extends Thread {
         JunkYard junkYard = new JunkYard();
 
         List<Storage> storageList = IntStream.range(0, countOfStorages)
-                .mapToObj(i -> new Storage(getName() + " Storage[" + (i + 1) + "]", junkYard))
+                .mapToObj(i -> new Storage(String.format("%s Storage[%d]", getName(), (i + 1)), junkYard))
                 .collect(Collectors.toList());
         junkYard.addStorages(storageList);
 
         junkYard.run();
 
-        //TODO Сюда запихать ничью и вынести в отдельный метод подсчет резов.
+        findWinners(storageList);
+    }
+
+    private void findWinners(List<Storage> storageList) {
         storageList.sort(Comparator.comparingInt(Storage::getResult));
-        Storage winner = storageList.get(countOfStorages - 1);
-        System.out.println("\nWinner: " + winner.getName() + ", score = " + winner.getResult());
+
+        List<Storage> winners = new ArrayList<>(storageList);
+        winners.removeIf(s -> s.getResult() != storageList.get(countOfStorages - 1).getResult());
+
+        winners.forEach(winner -> System.out.printf("\nWinner: %s, score = %d\n", winner.getName(), winner.getResult()));
+        if (winners.isEmpty()) {
+            System.out.println("Nobody won");
+        }
     }
 }

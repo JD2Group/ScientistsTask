@@ -7,18 +7,17 @@ import org.example.Storage;
 @Getter
 public class Scientist extends Thread {
     private final Storage linkedStorage;
-
     private final String threadName;
 
     public Scientist(String storageName, Storage storage) {
-        threadName = storageName + " - Scientist";
+        threadName = String.format("%s - Scientist", storageName);
         linkedStorage = storage;
     }
 
     @Override
     public void run() {
         setName(threadName);
-        System.out.println(threadName + " started.");
+        System.out.printf("%s started.\n", threadName);
         while (linkedStorage.isActive()) {
             try {
                 linkedStorage.sortRobotParts();
@@ -26,8 +25,7 @@ public class Scientist extends Thread {
                 e.printStackTrace();
             }
         }
-        System.out.println(threadName + " stopped.");
-
+        System.out.printf("%s stopped.\n", threadName);
     }
 
 }

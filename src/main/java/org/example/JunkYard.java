@@ -2,7 +2,7 @@ package org.example;
 
 import lombok.Getter;
 import org.example.utils.Constants;
-import org.example.utils.Factory;
+import org.example.threads.Factory;
 import org.example.utils.RobotParts;
 
 import java.util.ArrayList;
@@ -13,10 +13,8 @@ import java.util.stream.IntStream;
 
 @Getter
 public class JunkYard {
-
     private final List<Storage> storageList = new ArrayList<>();
     private final Factory factory = new Factory("Factory", this);
-
     private final List<RobotParts> robotPartsList = new ArrayList<>();
 
     public List<RobotParts> pickUpRobotParts(int count) {
@@ -30,7 +28,7 @@ public class JunkYard {
     public void addRobotParts(List<RobotParts> list) {
         synchronized (robotPartsList) {
             robotPartsList.addAll(list);
-            System.out.println("Robot parts on junk yard: " + robotPartsList);
+            System.out.printf("Robot parts on junk yard: %s\n", robotPartsList);
         }
     }
 
@@ -39,7 +37,7 @@ public class JunkYard {
             if (robotPartsList.isEmpty()) {
                 return null;
             }
-            int index = Constants.random.nextInt(robotPartsList.size());
+            int index = Constants.RANDOM.nextInt(robotPartsList.size());
             RobotParts part = robotPartsList.get(index);
             robotPartsList.remove(index);
             return part;
