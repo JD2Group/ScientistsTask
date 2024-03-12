@@ -13,4 +13,6 @@ public interface Constants {
     int TIME_DAY_SWAP = 10;
     int MAX_COUNT_OF_PARTS_PER_NIGHT = 4;
     int MIN_COUNT_OF_PARTS_PER_NIGHT = 1;
+    int MAX_COUNT_OF_PARTS_TO_TAKE = 4;
+    int MIN_COUNT_OF_PARTS_TO_TAKE = 1;
 }

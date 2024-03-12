@@ -1,7 +1,6 @@
 package org.example;
 
 import lombok.Getter;
-import org.example.Storage;
 import org.example.utils.Constants;
 import org.example.utils.Factory;
 import org.example.utils.RobotParts;
@@ -13,26 +12,29 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Getter
-public class JunkYard{
+public class JunkYard {
 
     private final List<Storage> storageList = new ArrayList<>();
     private final Factory factory = new Factory("Factory", this);
 
     private final List<RobotParts> robotPartsList = new ArrayList<>();
 
-    public List<RobotParts> pickUpRobotParts(int count){
+    public List<RobotParts> pickUpRobotParts(int count) {
         return IntStream.range(0, count)
                 .mapToObj(i -> provideRobotPart())
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
     }
-    public void addRobotParts(List<RobotParts> list){
-        robotPartsList.addAll(list);
-        System.out.println("Robot parts on junk yard: " + robotPartsList);
+
+    public void addRobotParts(List<RobotParts> list) {
+        synchronized (robotPartsList) {
+            robotPartsList.addAll(list);
+            System.out.println("Robot parts on junk yard: " + robotPartsList);
+        }
     }
 
-    private RobotParts provideRobotPart(){
+    private RobotParts provideRobotPart() {
         synchronized (robotPartsList) {
             if (robotPartsList.isEmpty()) {
                 return null;
@@ -44,14 +46,15 @@ public class JunkYard{
         }
     }
 
-    public synchronized void waitList(){
+    public synchronized void waitList() {
         try {
             wait();
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
-    public synchronized void notifyList(){
+
+    public synchronized void notifyList() {
         notifyAll();
     }
 
@@ -61,7 +64,7 @@ public class JunkYard{
         factory.start();
         try {
             factory.join();
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         storageList.forEach(Storage::deactivate);
@@ -71,7 +74,7 @@ public class JunkYard{
         storageList.forEach(Storage::calculateFinalResult);
     }
 
-    public void addStorages(List<Storage> st){
+    public void addStorages(List<Storage> st) {
         storageList.addAll(st);
     }
 }

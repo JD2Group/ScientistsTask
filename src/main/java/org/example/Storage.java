@@ -21,27 +21,27 @@ public class Storage {
     private int result;
 
 
-
-    public Storage(String name, JunkYard junkYard){
+    public Storage(String name, JunkYard junkYard) {
         this.name = name;
         sortedRobotParts = new HashMap<>();
         unsortedRobotParts = new ArrayList<>();
         linkedScientists = new Scientist(this.name, this);
         linkedMinion = new Minion(this.name, junkYard, this);
-        Arrays.stream(RobotParts.values()).forEach(part-> sortedRobotParts.put(part, 0));
+        Arrays.stream(RobotParts.values()).forEach(part -> sortedRobotParts.put(part, 0));
     }
-    public void activate(){
+
+    public void activate() {
         active = true;
         linkedMinion.start();
         linkedScientists.start();
     }
 
-    public synchronized void deactivate(){
+    public synchronized void deactivate() {
         active = false;
         notifyAll();
     }
 
-    public synchronized void putRobotParts(List<RobotParts> list){
+    public synchronized void putRobotParts(List<RobotParts> list) {
         System.out.println(name + " - Loading... ");
         unsortedRobotParts.addAll(list);
         notifyAll();
@@ -49,15 +49,15 @@ public class Storage {
 
     public synchronized void sortRobotParts() throws InterruptedException {
         System.out.println(name + " - Sorting...");
-        if (!unsortedRobotParts.isEmpty()){
-            unsortedRobotParts.forEach(part->
+        if (!unsortedRobotParts.isEmpty()) {
+            unsortedRobotParts.forEach(part ->
                     sortedRobotParts.put(part, sortedRobotParts.get(part) + 1));
             unsortedRobotParts.clear();
         }
         wait();
     }
 
-    public void calculateFinalResult(){
+    public void calculateFinalResult() {
         System.out.println(name + " : " + sortedRobotParts);
         result = sortedRobotParts.values().stream().sorted().collect(Collectors.toList()).get(0);
         System.out.println(name + " result = " + result);

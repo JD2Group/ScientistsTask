@@ -5,12 +5,12 @@ import org.example.Storage;
 
 
 @Getter
-public class Scientist extends Thread{
+public class Scientist extends Thread {
     private final Storage linkedStorage;
 
     private final String threadName;
 
-    public Scientist(String storageName, Storage storage){
+    public Scientist(String storageName, Storage storage) {
         threadName = storageName + " - Scientist";
         linkedStorage = storage;
     }
@@ -19,14 +19,14 @@ public class Scientist extends Thread{
     public void run() {
         setName(threadName);
         System.out.println(threadName + " started.");
-        while (linkedStorage.isActive()){
+        while (linkedStorage.isActive()) {
             try {
                 linkedStorage.sortRobotParts();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println( threadName + " stopped.");
+        System.out.println(threadName + " stopped.");
 
     }
 
